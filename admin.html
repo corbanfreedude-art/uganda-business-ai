@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+
+<h1>📊 Admin Analytics</h1>
+
+<p>Total Users: <span id="totalUsers">0</span></p>
+<p>Active Today: <span id="activeToday">0</span></p>
+<p>Total Prompts Today: <span id="totalPrompts">0</span></p>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  async function loadAnalytics() {
+    const snapshot = await db.collection("users").get();
+    const today = new Date().toISOString().split("T")[0];
+
+    let totalUsers = snapshot.size;
+    let activeToday = 0;
+    let totalPrompts = 0;
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.lastUsed === today) {
+        activeToday++;
+        totalPrompts += data.dailyUses || 0;
+      }
+    });
+
+    document.getElementById("totalUsers").innerText = totalUsers;
+    document.getElementById("activeToday").innerText = activeToday;
+    document.getElementById("totalPrompts").innerText = totalPrompts;
+  }
+
+  loadAnalytics();
+</script>
+
+</body>
+</html>
