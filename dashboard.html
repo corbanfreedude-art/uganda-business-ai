@@ -84,6 +84,72 @@ function generate() {
 
   if (usage >= 5) {
     document.getElementById("output").innerText =
+      "🚫 Free limit reached. Upgrade to Pro for unlimited access.";
+    return;
+  }
+
+  usage++;
+  localStorage.setItem("usageCount", usage);
+  document.getElementById("usageLeft").innerText = 5 - usage;
+
+  let input = document.getElementById("prompt").value.toLowerCase();
+  let response = "";
+
+  if (input.includes("business idea")) {
+    response =
+      "📌 Business Idea: Poultry Farming in Kampala\n\n" +
+      "💰 Startup Cost: UGX 2M – 5M\n\n" +
+      "📊 Market Opportunity:\nHigh demand for eggs and chicken in urban areas.\n\n" +
+      "📈 Revenue Model:\nSell to restaurants, supermarkets, and local markets.\n\n" +
+      "🚀 Growth Strategy:\nStart small (100 birds), reinvest profits, scale gradually.";
+  }
+
+  else if (input.includes("business plan")) {
+    response =
+      "📋 Business Plan Outline:\n\n" +
+      "1️⃣ Executive Summary\nDescribe your business and vision.\n\n" +
+      "2️⃣ Market Analysis\nIdentify target customers in Uganda.\n\n" +
+      "3️⃣ Operations Plan\nLocation, suppliers, staff needs.\n\n" +
+      "4️⃣ Financial Plan\nStartup costs, pricing, expected profit.\n\n" +
+      "5️⃣ Marketing Strategy\nSocial media + WhatsApp marketing.";
+  }
+
+  else if (input.includes("market analysis")) {
+    response =
+      "📊 Market Analysis (Uganda):\n\n" +
+      "🎯 Target Market:\nUrban youth & SMEs.\n\n" +
+      "📈 Demand Level:\nGrowing due to rising entrepreneurship.\n\n" +
+      "⚠ Competition:\nModerate – differentiation required.\n\n" +
+      "💡 Opportunity:\nDigital-first businesses are expanding rapidly.";
+  }
+
+  else {
+    response =
+      "🧠 Uganda Business AI Suggestion:\n\n" +
+      "Focus on solving a real problem in your community.\n\n" +
+      "Start small, validate demand, then scale.\n\n" +
+      "Ask more specific questions like:\n" +
+      "- Give me a business idea in Kampala\n" +
+      "- Create a business plan for poultry farming\n" +
+      "- Provide market analysis for cosmetics business";
+  }
+
+  document.getElementById("output").innerText = response;
+
+  const user = auth.currentUser;
+  if (user) {
+    db.collection("users").doc(user.uid).collection("prompts").add({
+      text: input,
+      createdAt: new Date()
+    });
+  }
+}
+
+  let usage = localStorage.getItem("usageCount") || 0;
+  usage = parseInt(usage);
+
+  if (usage >= 5) {
+    document.getElementById("output").innerText =
       "🚫 Free limit reached.";
     return;
   }
