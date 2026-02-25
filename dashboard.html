@@ -77,7 +77,68 @@ function logout() {
   });
 }
 
-function generate() {
+<script>
+async function generate() {
+
+  const prompt = document.getElementById("prompt").value.trim();
+  const output = document.getElementById("output");
+
+  if (!prompt) {
+    output.innerHTML = "Please enter your business idea.";
+    return;
+  }
+
+  const userId = localStorage.getItem("userId") || crypto.randomUUID();
+  localStorage.setItem("userId", userId);
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const userRef = db.collection("users").doc(userId);
+  const doc = await userRef.get();
+
+  let dailyUses = 0;
+  let lastUsed = today;
+
+  if (doc.exists) {
+    dailyUses = doc.data().dailyUses || 0;
+    lastUsed = doc.data().lastUsed || today;
+  }
+
+  // Reset if new day
+  if (lastUsed !== today) {
+    dailyUses = 0;
+  }
+
+  if (dailyUses >= 5) {
+    output.innerHTML = "🚫 Daily limit reached. Come back tomorrow.";
+    return;
+  }
+
+  // Fake AI response (for now)
+  const response = `
+    <h3>Business Idea for Kampala</h3>
+    <p><strong>Service:</strong> AI Social Media Management</p>
+    <p><strong>Target:</strong> Small businesses in Kampala</p>
+    <p><strong>Startup Cost:</strong> Low (Phone + Internet)</p>
+    <p><strong>Revenue Model:</strong> Monthly subscriptions</p>
+    <p><strong>Steps:</strong></p>
+    <ul>
+      <li>Find 10 small businesses</li>
+      <li>Create content using AI tools</li>
+      <li>Charge 150,000 UGX per month</li>
+    </ul>
+  `;
+
+  output.innerHTML = response;
+
+  // Update Firestore
+  await userRef.set({
+    dailyUses: dailyUses + 1,
+    lastUsed: today
+  });
+
+}
+</script>
 
   let usage = localStorage.getItem("usageCount") || 0;
   usage = parseInt(usage);
