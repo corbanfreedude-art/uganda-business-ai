@@ -1,0 +1,35 @@
+Css
+body {
+    font-family: Arial;
+    background: #f4f6f9;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    padding: 40px;
+}
+
+h1 {
+    color: #1e3a8a;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: green;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 20px;
+}
