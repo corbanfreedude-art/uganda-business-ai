@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - Uganda Business AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Login / Sign Up</h2>
+
+<input type="email" id="email" placeholder="Email"><br><br>
+<input type="password" id="password" placeholder="Password"><br><br>
+
+<button onclick="signUp()">Sign Up</button>
+<button onclick="login()">Login</button>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBCT-4-aSVz6ecsSYEViz0x3TLIblclID0",
+    authDomain: "uganda-business-ai.firebaseapp.com",
+    projectId: "uganda-business-ai",
+    storageBucket: "uganda-business-ai.firebasestorage.app",
+    messagingSenderId: "31664510646",
+    appId: "1:31664510646:web:672abe804ec43cf65c7817"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  function signUp() {
+    auth.createUserWithEmailAndPassword(
+      document.getElementById("email").value,
+      document.getElementById("password").value
+    )
+    .then(() => {
+      window.location.href = "dashboard.html";
+    })
+    .catch(error => {
+      alert(error.message);
+    });
+  }
+
+  function login() {
+    auth.signInWithEmailAndPassword(
+      document.getElementById("email").value,
+      document.getElementById("password").value
+    )
+    .then(() => {
+      window.location.href = "dashboard.html";
+    })
+    .catch(error => {
+      alert(error.message);
+    });
+  }
+</script>
+
+</body>
+</html>
