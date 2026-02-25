@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Uganda Business AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="margin:0; font-family:Arial; display:flex; height:100vh;">
+
+<!-- Sidebar -->
+<div style="width:220px; background:#1e3a8a; color:white; padding:20px;">
+  <h3>🇺🇬 Uganda AI</h3>
+  <p style="font-size:14px;">Business Assistant</p>
+  <hr style="border:0; border-top:1px solid rgba(255,255,255,0.3);">
+
+  <p>Free Uses:</p>
+  <h2 id="usageLeft">5</h2>
+
+  <button onclick="logout()"
+  style="margin-top:20px; padding:8px; width:100%; border:none; border-radius:5px;">
+  Logout
+  </button>
+</div>
+
+<!-- Main Content -->
+<div style="flex:1; padding:30px; background:#f4f6f9;">
+
+  <h2>Business AI Generator</h2>
+
+  <textarea id="prompt"
+  placeholder="Ask: Give me a business idea in Kampala"
+  style="width:100%; height:100px; padding:10px; margin-top:10px;"></textarea>
+
+  <br><br>
+
+  <button onclick="generate()"
+  style="background:green; color:white; padding:10px 20px; border:none; border-radius:6px;">
+  Generate
+  </button>
+
+  <div id="output"
+  style="margin-top:20px; background:white; padding:20px; border-radius:8px; min-height:100px;">
+  </div>
+
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBCT-4-aSVz6ecsSYEViz0x3TLIblclID0",
+  authDomain: "uganda-business-ai.firebaseapp.com",
+  projectId: "uganda-business-ai",
+  storageBucket: "uganda-business-ai.firebasestorage.app",
+  messagingSenderId: "31664510646",
+  appId: "1:31664510646:web:672abe804ec43cf65c7817"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
+
+function logout() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+
+function generate() {
+
+  let usage = localStorage.getItem("usageCount") || 0;
+  usage = parseInt(usage);
+
+  if (usage >= 5) {
+    document.getElementById("output").innerText =
+      "🚫 Free limit reached.";
+    return;
+  }
+
+  usage++;
+  localStorage.setItem("usageCount", usage);
+
+  document.getElementById("usageLeft").innerText = 5 - usage;
+
+  let input = document.getElementById("prompt").value.toLowerCase();
+  let response = "";
+
+  if (input.includes("business idea")) {
+    response = "Start a poultry farming business in Kampala. High demand, low capital.";
+  } else if (input.includes("marketing")) {
+    response = "Use WhatsApp marketing, Facebook ads, and referrals.";
+  } else {
+    response = "Focus on solving real problems in Uganda and start small.";
+  }
+
+  document.getElementById("output").innerText = response;
+
+  const user = auth.currentUser;
+  if (user) {
+    db.collection("users").doc(user.uid).collection("prompts").add({
+      text: input,
+      createdAt: new Date()
+    });
+  }
+}
+
+</script>
+
+</body>
+</html>
